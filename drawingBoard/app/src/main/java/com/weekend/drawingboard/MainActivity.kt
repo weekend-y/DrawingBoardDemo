@@ -1,14 +1,10 @@
 package com.weekend.drawingboard
 
 import android.app.Dialog
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -32,20 +28,42 @@ class MainActivity : AppCompatActivity() {
             eraserButton.text = if (drawingView.isEraserMode) "画笔" else "橡皮擦"
         }
 
-        val seekBarBrushSize: SeekBar = findViewById(R.id.seekBarBrushSize)
-        seekBarBrushSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                drawingView.brushSize = progress.toFloat()
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        val btnBrushSize: Button = findViewById(R.id.btnBrushSize)
+        btnBrushSize.setOnClickListener {
+            showBrushSizeDialog()
+        }
 
         val btnColorPicker: ImageButton = findViewById(R.id.btnColorPicker)
         btnColorPicker.setOnClickListener {
             showColorPickerDialog()
         }
+
+    }
+
+    private fun showBrushSizeDialog() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_brush_size)
+
+        val brushSizes = listOf(5f, 10f, 15f, 20f, 25f)
+        val container = dialog.findViewById<LinearLayout>(R.id.brushSizeContainer)
+
+        brushSizes.forEach { size ->
+            val button = Button(this).apply {
+                text = "$size"
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+                setOnClickListener {
+                    drawingView.brushSize = size
+                    dialog.dismiss()
+                }
+            }
+            container.addView(button)
+        }
+
+        dialog.show()
     }
 
     private fun showColorPickerDialog() {
@@ -57,65 +75,46 @@ class MainActivity : AppCompatActivity() {
         val colorPickerView2 = dialog.findViewById<android.widget.SeekBar>(R.id.colorPickerView2)
         val colorPickerView3 = dialog.findViewById<android.widget.SeekBar>(R.id.colorPickerView3)
 
-        colorPickerView.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        colorPickerView.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
                 val r = progress
                 val g = colorPickerView2.progress
                 val b = colorPickerView3.progress
-                val color = Color.rgb(r, g, b)
+                val color = android.graphics.Color.rgb(r, g, b)
                 colorView.setBackgroundColor(color)
                 drawingView.brushColor = color
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
         })
 
-        colorPickerView2.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        colorPickerView2.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
                 val r = colorPickerView.progress
                 val g = progress
                 val b = colorPickerView3.progress
-                val color = Color.rgb(r, g, b)
+                val color = android.graphics.Color.rgb(r, g, b)
                 colorView.setBackgroundColor(color)
                 drawingView.brushColor = color
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
         })
 
-        colorPickerView3.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        colorPickerView3.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
                 val r = colorPickerView.progress
                 val g = colorPickerView2.progress
                 val b = progress
-                val color = Color.rgb(r, g, b)
+                val color = android.graphics.Color.rgb(r, g, b)
                 colorView.setBackgroundColor(color)
                 drawingView.brushColor = color
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        dialog.show()
-    }
-
-    fun showZoomDialog(view: View) {
-        val dialog = Dialog(this)
-        dialog.setContentView(R.layout.dialog_zoom)
-
-        val seekBarZoom = dialog.findViewById<SeekBar>(R.id.seekBarZoom)
-        seekBarZoom.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val scale = progress / 100f
-                drawingView.scaleX = scale
-                drawingView.scaleY = scale
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
         })
 
         dialog.show()

@@ -16,13 +16,12 @@
             android:layout_height="wrap_content"
             android:text="撤回" />
 
-        <SeekBar
-            android:id="@+id/seekBarBrushSize"
+        <Button
+            android:id="@+id/btnBrushSize"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:max="50"
-            android:progress="10" />
+            android:text="画笔粗细" />
 
         <Button
             android:id="@+id/btnEraser"
